@@ -1,8 +1,10 @@
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 const HomePage = () => {
+  const { userInfo } = useSelector((state) => state.auth);
   return (
-    <div className="relative isolate px-6 pt-14 lg:px-8">
+    <div className="relative isolate px-6 pt-14 lg:px-8  z-0">
       <div
         className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
         aria-hidden="true"
@@ -37,20 +39,34 @@ const HomePage = () => {
             <br /> React JS, Redux toolkit, tailwind CSS, React-Router-Dom,
             Axios. in frontend.
           </p>
-          <div className="mt-10 flex items-center justify-center gap-x-6">
-            <Link
-              to="/login"
-              className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Log in
-            </Link>
-            <Link
-              to="/register"
-              className="text-sm font-semibold leading-6 text-gray-900"
-            >
-              Sign up <span aria-hidden="true">→</span>
-            </Link>
-          </div>
+          {userInfo ? (
+            <div className="my-10">
+              <div className="relative w-fit mx-auto rounded-full px-3 py-1 leading-6 text-lg font-semibold text-gray-900">
+                Welcome {userInfo.name}.
+                <Link to="/profile" className="font-semibold text-indigo-600">
+                  <span className="absolute inset-0" aria-hidden="true" />
+                  Visit Profile <span aria-hidden="true">&rarr;</span>
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="mt-10 flex items-center justify-center gap-x-6">
+                <Link
+                  to="/login"
+                  className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  Log in
+                </Link>
+                <Link
+                  to="/register"
+                  className="text-sm font-semibold leading-6 text-gray-900"
+                >
+                  Sign up <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+            </>
+          )}
         </div>
       </div>
       <div
