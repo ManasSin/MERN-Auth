@@ -11,12 +11,7 @@ import MenuItem from "./ui/MenuItem";
 import { useLogoutMutation } from "../slices/api/usersApiSlice";
 import { removeCredentials } from "../slices/authSlice";
 
-const navigation = [
-  { name: "Product", to: "#" },
-  { name: "Features", to: "#" },
-  { name: "Marketplace", to: "#" },
-  { name: "Company", to: "#" },
-];
+const navigation = [{ name: "Features", to: "/features" }];
 
 const Header = () => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -47,11 +42,7 @@ const Header = () => {
         <div className="flex lg:flex-1">
           <Link to="" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
-            <img
-              className="h-8 w-auto"
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-              alt=""
-            />
+            <img className="h-8 w-auto" src="public/vite.svg" alt="" />
           </Link>
         </div>
         <div className="flex lg:hidden">
@@ -137,11 +128,7 @@ const Header = () => {
           <div className="flex items-center justify-between">
             <Link to="" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
-              <img
-                className="h-8 w-auto"
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                alt=""
-              />
+              <img className="h-8 w-auto" src="public/vite.svg" alt="" />
             </Link>
             <button
               type="button"

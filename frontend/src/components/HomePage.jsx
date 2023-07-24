@@ -31,14 +31,18 @@ const HomePage = () => {
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
             Backend and Frontend authentication code.
           </h1>
-          <p className="mt-6 text-lg leading-8 text-gray-600">
-            {/* Extream usefull and robust authentication system build using MERN
-            stack, <br />  */}
-            Express, mongoDB, mongoose ORM, Node Js, Joi validation, HTTP
-            cookies, JWT. in backend.
-            <br /> React JS, Redux toolkit, tailwind CSS, React-Router-Dom,
-            Axios. in frontend.
-          </p>
+          <div className="flex flex-col md:flex-row md:justify-center md:items-center justify-between">
+            <p className="mt-6 text-lg leading-8 text-gray-600 max-w-sm mx-auto sm:max-w-xs w-full">
+              {/* Extream usefull and robust authentication system build using MERN
+              stack, <br />  */}
+              Express, mongoDB, mongoose ORM, Node Js, Joi validation, HTTP
+              cookies, JWT. in backend.
+            </p>
+            <p className="mt-6 text-lg leading-8 text-gray-600 max-w-sm mx-auto sm:max-w-xs w-full">
+              React JS, Redux toolkit, tailwind CSS, React-Router-Dom, Axios,
+              and Toastify in frontend.
+            </p>
+          </div>
           {userInfo ? (
             <div className="my-10">
               <div className="relative w-fit mx-auto rounded-full px-3 py-1 leading-6 text-lg font-semibold text-gray-900">

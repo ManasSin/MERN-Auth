@@ -7,6 +7,7 @@ const protectRouts = asyncHandler(async (req, res, next) => {
   let token;
 
   token = req.cookies.jwt;
+  console.log(token);
 
   // * we take the token that we have send the user on signup. and verify it
   // * then we decode it to get the actual paramter we used to generate the token.
@@ -23,7 +24,7 @@ const protectRouts = asyncHandler(async (req, res, next) => {
     }
   } else {
     res.status(401);
-    throw new Error("your not authorised");
+    throw new Error("You are not authorised");
   }
 });
 
