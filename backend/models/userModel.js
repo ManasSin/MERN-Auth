@@ -1,18 +1,37 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
+// - Website
+// - Contact person name
+// - Phone number
+
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
       required: true,
+      max: 120,
     },
     email: {
       type: String,
       required: true,
       unique: true,
     },
+    address: {
+      type: String,
+      required: false,
+      max: 1000,
+    },
     password: {
+      type: String,
+      required: true,
+    },
+    website: {
+      type: String,
+      required: false,
+      max: 120,
+    },
+    phone: {
       type: String,
       required: true,
     },

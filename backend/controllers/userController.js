@@ -22,6 +22,9 @@ export const authUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      phone: user.phone,
+      website: user.website,
+      address: user.address,
     });
   } else {
     res.status(400);
@@ -34,7 +37,8 @@ export const authUser = asyncHandler(async (req, res) => {
 // @access Public
 
 export const resgisterUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, phone, address, website } = req.body;
+  console.log(name, email, password, phone, address, website);
 
   const userExists = await User.findOne({ email });
 
@@ -47,7 +51,12 @@ export const resgisterUser = asyncHandler(async (req, res) => {
     name,
     email,
     password,
+    phone,
+    address,
+    website,
   });
+
+  console.log(user);
 
   if (user) {
     generateJWTToken(res, user._id);
@@ -55,6 +64,9 @@ export const resgisterUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      phone: user.phone,
+      website: user.website,
+      address: user.address,
     });
   } else {
     res.status(400);
@@ -83,6 +95,9 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     _id: req.user._id,
     name: req.user.name,
     email: req.user.email,
+    phone: requser.phone,
+    website: requser.website,
+    address: requser.address,
   };
 
   res.status(200).json(user);
@@ -100,10 +115,14 @@ export const updateUserProfiel = asyncHandler(async (req, res) => {
       email: newEmail,
       name: newName,
       password: changedPassword,
+      phone: newPhone,
+      address: newAddress,
     } = req.body;
 
     user.name = newName || user.name;
     user.email = newEmail || user.email;
+    user.phone = newPhone || user.phone;
+    user.address = newAddress || user.address;
 
     if (changedPassword) {
       user.password = changedPassword;
@@ -115,6 +134,9 @@ export const updateUserProfiel = asyncHandler(async (req, res) => {
       _id: updatedUser._id,
       name: updatedUser.name,
       email: updatedUser.email,
+      phone: updatedUser.phone,
+      website: updatedUser.website,
+      address: updatedUser.address,
     });
   } else {
     res.status(404);
