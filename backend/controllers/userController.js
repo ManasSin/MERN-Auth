@@ -116,6 +116,7 @@ export const updateUserProfiel = asyncHandler(async (req, res) => {
       name: newName,
       password: changedPassword,
       phone: newPhone,
+      website: newWebsite,
       address: newAddress,
     } = req.body;
 
@@ -123,6 +124,7 @@ export const updateUserProfiel = asyncHandler(async (req, res) => {
     user.email = newEmail || user.email;
     user.phone = newPhone || user.phone;
     user.address = newAddress || user.address;
+    user.website = newWebsite || user.website;
 
     if (changedPassword) {
       user.password = changedPassword;
