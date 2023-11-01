@@ -53,6 +53,8 @@ const ProfileScreen = () => {
     }
   };
 
+  console.log(userInfo);
+
   return (
     <div className="relative isolate px-6 pt-14 lg:px-8  z-0">
       <div
@@ -107,7 +109,7 @@ const ProfileScreen = () => {
                     placeholder={userInfo?.email}
                   />
 
-                  <InputField
+                  {/* <InputField
                     label={"Password"}
                     htmlfor={"password"}
                     type={"password"}
@@ -120,7 +122,47 @@ const ProfileScreen = () => {
                     type={"password"}
                     value={crendential.ConfirmPassword}
                     onChange={handleFromChange}
+                  /> */}
+
+                  <InputField
+                    label={"Add Phone"}
+                    htmlfor={"phoneNumber"}
+                    type={"tel"}
+                    value={crendential.phoneNumber}
+                    onChange={handleFromChange}
+                    placeholder={userInfo?.phone}
                   />
+
+                  <InputField
+                    label={"Website"}
+                    htmlfor={"website"}
+                    type={"text"}
+                    value={crendential.website}
+                    onChange={handleFromChange}
+                    placeholder={userInfo?.website}
+                  />
+
+                  <div>
+                    <div className="flex justify-between items-center">
+                      <label
+                        htmlFor={"textarea"}
+                        className="block text-sm font-medium leading-6 text-gray-900"
+                      >
+                        Enter your address
+                      </label>
+                    </div>
+                    <div className="mt-2">
+                      <textarea
+                        label={"Add address"}
+                        name="textarea"
+                        // type={"text"}
+                        value={crendential.address}
+                        onChange={handleFromChange}
+                        placeholder={userInfo?.address}
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-3"
+                      />
+                    </div>
+                  </div>
 
                   <div>
                     <Button
