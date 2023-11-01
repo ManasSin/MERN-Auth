@@ -1,11 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
-import InputField from "./UI/inputfield";
 import Button from "./ui/button";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLoginMutation } from "../slices/api/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
 import { toast } from "react-toastify";
+import FormikInput from "./ui/FormikInput";
+import { Form, Formik } from "formik";
+import { LoginSchema } from "../Schema/validationSchema";
 
 const LoginFrom = () => {
   const navigate = useNavigate();
@@ -21,32 +23,20 @@ const LoginFrom = () => {
     }
   }, [navigate, userInfo]);
 
-  const [credential, setCredential] = useState({
+  const initialValue = {
     email: "",
     password: "",
-  });
-
-  const handleFromChange = (e) => {
-    let name = e.target.name;
-    let value = e.target.value;
-
-    setCredential({
-      ...credential,
-      [name]: value,
-    });
   };
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
-
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const { email, password } = credential;
-      const res = await login({ email, password }).unwrap();
+      const res = await login({ ...values }).unwrap();
       dispatch(setCredentials({ ...res }));
       navigate("/");
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
+    setSubmitting(false);
   };
 
   return (
@@ -64,35 +54,36 @@ const LoginFrom = () => {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" method="POST" onSubmit={submitHandler}>
-          <InputField
-            label={"Email address"}
-            htmlfor={"email"}
-            type={"email"}
-            name={credential.email}
-            value={credential.email}
-            onChange={handleFromChange}
-          />
+        <Formik
+          initialValues={initialValue}
+          validationSchema={LoginSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ isSubmitting }) => (
+            <Form className="space-y-6" method="POST">
+              <FormikInput
+                label={"Email address"}
+                name={"email"}
+                type={"email"}
+                placeholder={"Enter your Address"}
+              />
+              <FormikInput
+                label={"Password"}
+                name={"password"}
+                type={"password"}
+                placeholder={"Please Enter Password"}
+              />
 
-          <InputField
-            label={"Password"}
-            htmlfor={"password"}
-            type={"password"}
-            otherlinklabel={"Forgot Password"}
-            otherlink={"/"}
-            name={credential.password}
-            value={credential.password}
-            onChange={handleFromChange}
-          />
-
-          <div>
-            <Button
-              type={"submit"}
-              text={isLoading ? "Loading..." : "Log in"}
-              onClick={() => {}}
-            />
-          </div>
-        </form>
+              <div>
+                <Button
+                  type={"submit"}
+                  text={isLoading ? "Loading..." : "Log in"}
+                  onClick={() => {}}
+                />
+              </div>
+            </Form>
+          )}
+        </Formik>
 
         <p className="mt-10 text-center text-sm text-gray-500">
           Not a member?{" "}

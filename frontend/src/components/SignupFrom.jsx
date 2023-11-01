@@ -1,11 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
-import InputField from "./UI/inputfield";
+import { Form, Formik } from "formik";
 import Button from "./ui/button";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRegisterMutation } from "../slices/api/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
 import { toast } from "react-toastify";
+import { validationSchema } from "../Schema/validationSchema";
+import FormikInput from "./ui/FormikInput";
+import FormikTextarea from "./ui/FormikTextarea";
 
 const SignupFrom = () => {
   const dispatch = useDispatch();
@@ -15,25 +18,15 @@ const SignupFrom = () => {
 
   const { userInfo } = useSelector((state) => state.auth);
 
-  const [crendential, setCrendential] = useState({
+  const initialValue = {
     name: "",
-    email: "",
-    password: "",
-    ConfirmPassword: "",
-    phone: "",
     address: "",
+    email: "",
     website: "",
-  });
-
-  // const initialValue = {
-  //   name: "",
-  //   address: "",
-  //   email: "",
-  //   website: "",
-  //   phone: "",
-  //   password: "",
-  //   ConfirmPassword: "",
-  // }
+    phone: "",
+    password: "",
+    confirmPassword: "",
+  };
 
   useEffect(() => {
     if (userInfo) {
@@ -41,38 +34,17 @@ const SignupFrom = () => {
     }
   }, [navigate, userInfo]);
 
-  const handleFromChange = (e) => {
-    let name = e.target.name;
-    let value = e.target.value;
-
-    setCrendential({
-      ...crendential,
-      [name]: value,
-    });
-  };
-
-  const signupHandler = async (e) => {
-    e.preventDefault();
-
-    if (crendential.password !== crendential.ConfirmPassword) {
-      toast.error("Passwords Do not match");
-    } else {
-      try {
-        const { name, email, password, phone, address, website } = crendential;
-        const res = await register({
-          name,
-          email,
-          password,
-          phone,
-          address,
-          website,
-        }).unwrap();
-        dispatch(setCredentials({ ...res }));
-        navigate("/");
-      } catch (err) {
-        toast.error(err?.data?.message || err.error);
-      }
+  const handleSubmit = async (values, { setSubmitting }) => {
+    try {
+      const res = await register({
+        ...values,
+      }).unwrap();
+      dispatch(setCredentials({ ...res }));
+      navigate("/");
+    } catch (error) {
+      toast.error(error?.data?.message || error.error);
     }
+    setSubmitting(false);
   };
 
   return (
@@ -90,86 +62,66 @@ const SignupFrom = () => {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" method="POST" onSubmit={signupHandler}>
-          <InputField
-            label={"Enter your name"}
-            htmlfor={"name"}
-            type={"text"}
-            // name={crendential.name}
-            value={crendential.name}
-            onChange={handleFromChange}
-          />
-
-          <InputField
-            label={"Email address"}
-            htmlfor={"email"}
-            type={"email"}
-            // name={crendential.email}
-            value={crendential.email}
-            onChange={handleFromChange}
-          />
-
-          <InputField
-            label={"Password"}
-            htmlfor={"password"}
-            type={"password"}
-            // name={crendential.password}
-            value={crendential.password}
-            onChange={handleFromChange}
-          />
-          <InputField
-            label={"Confirm Password"}
-            htmlfor={"ConfirmPassword"}
-            type={"password"}
-            // name={crendential.password}
-            value={crendential.ConfirmPassword}
-            onChange={handleFromChange}
-          />
-          <InputField
-            label={"Add Phone"}
-            htmlfor={"phoneNumber"}
-            type={"tel"}
-            value={crendential.phoneNumber}
-            onChange={handleFromChange}
-          />
-
-          <InputField
-            label={"Website"}
-            htmlfor={"website"}
-            type={"text"}
-            value={crendential.website}
-            onChange={handleFromChange}
-          />
-
-          <div>
-            <div className="flex justify-between items-center">
-              <label
-                htmlFor={"textarea"}
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Enter your address
-              </label>
-            </div>
-            <div className="mt-2">
-              <textarea
-                label={"Add address"}
-                name="address"
-                // type={"text"}
-                value={crendential.address}
-                onChange={handleFromChange}
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-3"
+        <Formik
+          initialValues={initialValue}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ isSubmitting }) => (
+            <Form className="space-y-6" method="POST">
+              <FormikInput
+                label={"Enter your name"}
+                name={"name"}
+                type={"text"}
+                placeholder={"Enter your name"}
               />
-            </div>
-          </div>
+              <FormikInput
+                label={"Email address"}
+                name={"email"}
+                type={"email"}
+                placeholder={"Enter your Address"}
+              />
+              <FormikInput
+                label={"Password"}
+                name={"password"}
+                type={"password"}
+                placeholder={"Please Enter Password"}
+              />
+              <FormikInput
+                label={"Confirm Password"}
+                name={"confirmPassword"}
+                type={"password"}
+                placeholder={"Confirm Password"}
+              />
+              <FormikInput
+                label={"Add Phone"}
+                name={"phone"}
+                type={"tel"}
+                placeholder={"Pleae add Phone"}
+              />
+              <FormikInput
+                label={"Website"}
+                name={"website"}
+                type={"text"}
+                placeholder={"Enter Website Link"}
+              />
 
-          <div>
-            <Button
-              type={"submit"}
-              onClick={() => {}}
-              text={isLoading ? "Loading..." : "Sign up"}
-            />
-          </div>
-        </form>
+              <FormikTextarea
+                label={"Address"}
+                name={"address"}
+                type={"text-area"}
+                placeholder={"Enter address here"}
+              />
+              <div>
+                <Button
+                  type={"submit"}
+                  onClick={() => {}}
+                  text={isLoading ? "Loading..." : "Sign up"}
+                />
+              </div>
+            </Form>
+          )}
+        </Formik>
 
         <p className="mt-10 text-center text-sm text-gray-500">
           Already a member?{" "}

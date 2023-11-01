@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
-import InputField from "./UI/inputfield";
-import { useState } from "react";
 import Button from "./ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { useUpdateMutation } from "../slices/api/usersApiSlice";
 import { toast } from "react-toastify";
 import { setCredentials } from "../slices/authSlice";
+import { Form, Formik } from "formik";
+import FormikInput from "./ui/FormikInput";
+import FormikTextarea from "./ui/FormikTextarea";
+import { validationSchema } from "../Schema/validationSchema";
 
 const ProfileScreen = () => {
   const dispatch = useDispatch();
@@ -14,46 +16,29 @@ const ProfileScreen = () => {
 
   const { userInfo } = useSelector((state) => state.auth);
 
-  const [crendential, setCrendential] = useState({
-    name: userInfo.name,
-    email: userInfo.email,
+  const initialValue = {
+    name: "",
+    address: "",
+    email: "",
+    website: "",
+    phone: "",
     password: "",
-    ConfirmPassword: "",
-  });
-
-  const handleFromChange = (e) => {
-    let name = e.target.name;
-    let value = e.target.value;
-
-    setCrendential({
-      ...crendential,
-      [name]: value,
-    });
+    confirmPassword: "",
   };
 
-  const signupHandler = async (e) => {
-    e.preventDefault();
-
-    if (crendential.password !== crendential.ConfirmPassword) {
-      toast.error("Passwords Do not match");
-    } else {
-      try {
-        const { name, email, password } = crendential;
-        const res = await updateProfile({
-          _id: userInfo._id,
-          name,
-          email,
-          password,
-        }).unwrap();
-        dispatch(setCredentials({ ...res }));
-        toast.success("Profile Updates");
-      } catch (err) {
-        toast.error(err?.data?.message || err.error);
-      }
+  const handleSubmit = async (values, { setSubmitting }) => {
+    try {
+      const res = await updateProfile({
+        _id: userInfo._id,
+        ...values,
+      }).unwrap();
+      dispatch(setCredentials({ ...res }));
+      toast.success("Profile Updates");
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
     }
+    setSubmitting(false);
   };
-
-  console.log(userInfo);
 
   return (
     <div className="relative isolate px-6 pt-14 lg:px-8  z-0">
@@ -86,92 +71,67 @@ const ProfileScreen = () => {
           <div className="mt-4 sm:mt-10 flex items-center justify-center gap-x-6">
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 pt-7 lg:px-8">
               <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form
-                  className="space-y-6"
-                  method="POST"
-                  onSubmit={signupHandler}
+                <Formik
+                  initialValues={initialValue}
+                  validationSchema={validationSchema}
+                  onSubmit={handleSubmit}
                 >
-                  <InputField
-                    label={"Name"}
-                    htmlfor={"name"}
-                    type={"text"}
-                    value={crendential.name}
-                    onChange={handleFromChange}
-                    placeholder={userInfo?.name}
-                  />
-
-                  <InputField
-                    label={"Email address"}
-                    htmlfor={"email"}
-                    type={"email"}
-                    value={crendential.email}
-                    onChange={handleFromChange}
-                    placeholder={userInfo?.email}
-                  />
-
-                  {/* <InputField
-                    label={"Password"}
-                    htmlfor={"password"}
-                    type={"password"}
-                    value={crendential.password}
-                    onChange={handleFromChange}
-                  />
-                  <InputField
-                    label={"Confirm Password"}
-                    htmlfor={"ConfirmPassword"}
-                    type={"password"}
-                    value={crendential.ConfirmPassword}
-                    onChange={handleFromChange}
-                  /> */}
-
-                  <InputField
-                    label={"Add Phone"}
-                    htmlfor={"phoneNumber"}
-                    type={"tel"}
-                    value={crendential.phoneNumber}
-                    onChange={handleFromChange}
-                    placeholder={userInfo?.phone}
-                  />
-
-                  <InputField
-                    label={"Website"}
-                    htmlfor={"website"}
-                    type={"text"}
-                    value={crendential.website}
-                    onChange={handleFromChange}
-                    placeholder={userInfo?.website}
-                  />
-
-                  <div>
-                    <div className="flex justify-between items-center">
-                      <label
-                        htmlFor={"textarea"}
-                        className="block text-sm font-medium leading-6 text-gray-900"
-                      >
-                        Enter your address
-                      </label>
-                    </div>
-                    <div className="mt-2">
-                      <textarea
-                        label={"Add address"}
-                        name="textarea"
-                        // type={"text"}
-                        value={crendential.address}
-                        onChange={handleFromChange}
-                        placeholder={userInfo?.address}
-                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-3"
+                  {({ isSubmitting }) => (
+                    <Form className="space-y-6 text-start" method="POST">
+                      <FormikInput
+                        label={"Enter your name"}
+                        name={"name"}
+                        type={"text"}
+                        placeholder={"Enter your name"}
                       />
-                    </div>
-                  </div>
+                      <FormikInput
+                        label={"Email address"}
+                        name={"email"}
+                        type={"email"}
+                        placeholder={"Enter your Address"}
+                      />
+                      <FormikInput
+                        label={"Password"}
+                        name={"password"}
+                        type={"password"}
+                        placeholder={"Please Enter Password"}
+                      />
+                      <FormikInput
+                        label={"Confirm Password"}
+                        name={"confirmPassword"}
+                        type={"password"}
+                        placeholder={"Confirm Password"}
+                      />
+                      <FormikInput
+                        label={"Add Phone"}
+                        name={"phone"}
+                        type={"tel"}
+                        placeholder={"Pleae add Phone"}
+                      />
+                      <FormikInput
+                        label={"Website"}
+                        name={"website"}
+                        type={"text"}
+                        placeholder={"Enter Website Link"}
+                      />
 
-                  <div>
-                    <Button
-                      type={"submit"}
-                      onClick={() => {}}
-                      text={isLoading ? "Loading..." : "Update Data"}
-                    />
-                  </div>
-                </form>
+                      <FormikTextarea
+                        label={"Address"}
+                        name={"address"}
+                        type={"text-area"}
+                        placeholder={"Enter address here"}
+                      />
+
+                      <div>
+                        <Button
+                          type={"submit"}
+                          onClick={() => {}}
+                          text={isLoading ? "Loading..." : "Update Data"}
+                        />
+                      </div>
+                    </Form>
+                  )}
+                </Formik>
               </div>
             </div>
           </div>
