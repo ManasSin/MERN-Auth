@@ -28,4 +28,16 @@ const validationSchema = Yup.object({
     .required("Confirm password is required"),
 });
 
-export default validationSchema;
+const LoginSchema = Yup.object({
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  password: Yup.string()
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+      "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, and one number"
+    )
+    .required("Password is required"),
+});
+
+export { validationSchema, LoginSchema };
